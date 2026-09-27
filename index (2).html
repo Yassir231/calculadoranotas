@@ -1,0 +1,244 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>VendeAI — Crea anuncios mejores en segundos</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="container header-row">
+    <span class="logo">VendeAI</span>
+    <nav class="main-nav">
+      <a href="#inicio">Herramienta</a>
+      <a href="#como-funciona">Cómo funciona</a>
+      <a href="#precios">Precios</a>
+      <a href="#faq">FAQ</a>
+      <a href="#privacidad">Privacidad</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+
+  <section id="inicio" class="hero">
+    <div class="container hero-grid">
+      <div class="hero-copy">
+        <h1>Crea anuncios mejores en segundos.</h1>
+        <p>Rellena los datos de tu producto y VendeAI te prepara el título, la descripción, las palabras clave y un mensaje listo para responder a quien pregunte. Sin inventar nada: solo usa lo que tú le cuentas.</p>
+        <p id="quota-msg" class="quota-msg"></p>
+      </div>
+
+      <div class="tool-card" id="tool-card">
+        <form id="ad-form" novalidate>
+          <div class="field">
+            <label for="nombre">Nombre del producto</label>
+            <input type="text" id="nombre" name="nombre" placeholder="Ej. Sudadera con capucha" required>
+          </div>
+          <div class="field-row">
+            <div class="field">
+              <label for="marca">Marca</label>
+              <input type="text" id="marca" name="marca" placeholder="Ej. Nike">
+            </div>
+            <div class="field">
+              <label for="categoria">Categoría</label>
+              <select id="categoria" name="categoria" required>
+                <option value="" disabled selected>Elige una categoría</option>
+                <option>Ropa</option>
+                <option>Calzado</option>
+                <option>Accesorios</option>
+                <option>Bolsos</option>
+                <option>Deporte</option>
+                <option>Hogar</option>
+                <option>Electrónica</option>
+                <option>Libros</option>
+                <option>Otros</option>
+              </select>
+            </div>
+          </div>
+          <div class="field-row">
+            <div class="field">
+              <label for="estado">Estado</label>
+              <select id="estado" name="estado" required>
+                <option value="" disabled selected>Elige el estado</option>
+                <option>Nuevo con etiquetas</option>
+                <option>Nuevo sin etiquetas</option>
+                <option>Muy buen estado</option>
+                <option>Buen estado</option>
+                <option>Con signos de uso</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="talla">Talla / modelo</label>
+              <input type="text" id="talla" name="talla" placeholder="Ej. M, 42, ref. modelo...">
+            </div>
+          </div>
+          <div class="field-row">
+            <div class="field">
+              <label for="color">Color</label>
+              <input type="text" id="color" name="color" placeholder="Ej. Azul marino">
+            </div>
+            <div class="field">
+              <label for="precio">Precio que quieres pedir (€)</label>
+              <input type="number" id="precio" name="precio" min="0" step="0.5" placeholder="Ej. 15" required>
+            </div>
+          </div>
+          <div class="field">
+            <label for="info">Información adicional</label>
+            <textarea id="info" name="info" rows="3" placeholder="Ej. apenas usado, defecto en un bolsillo, incluye funda..."></textarea>
+          </div>
+          <p class="form-error" id="form-error"></p>
+          <button type="submit" class="btn btn-primary" id="generate-btn">Generar anuncio</button>
+        </form>
+      </div>
+    </div>
+
+    <div class="container">
+      <div class="result-card hidden" id="result-card">
+        <div class="result-header">
+          <h2>Tu anuncio</h2>
+          <span class="version-tag" id="version-tag">versión 1</span>
+        </div>
+
+        <div class="result-block">
+          <div class="result-block-head"><h3>Título</h3><button class="btn-copy" data-copy="title">Copiar título</button></div>
+          <p id="res-title"></p>
+        </div>
+
+        <div class="result-block">
+          <div class="result-block-head"><h3>Descripción</h3><button class="btn-copy" data-copy="desc">Copiar descripción</button></div>
+          <p id="res-desc"></p>
+        </div>
+
+        <div class="result-block">
+          <h3>Características</h3>
+          <ul id="res-features"></ul>
+        </div>
+
+        <div class="result-block">
+          <h3>Palabras clave</h3>
+          <p id="res-keywords"></p>
+        </div>
+
+        <div class="result-block">
+          <h3>Precio sugerido</h3>
+          <p id="res-price"></p>
+        </div>
+
+        <div class="result-block">
+          <h3>Mensaje para un comprador interesado</h3>
+          <p id="res-buyer"></p>
+        </div>
+
+        <div class="warnings hidden" id="res-warnings"></div>
+
+        <div class="result-actions">
+          <button class="btn btn-secondary" id="copy-all">Copiar todo</button>
+          <button class="btn btn-outline" id="regenerate">Generar otra versión</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="como-funciona" class="section-narrow">
+    <div class="container">
+      <h2>Cómo funciona</h2>
+      <ol class="steps">
+        <li><span class="step-num">1</span><h3>Cuéntale el producto</h3><p>Nombre, marca, estado, talla, color y el precio que te gustaría pedir. Cuanto más completo, mejor sale el anuncio.</p></li>
+        <li><span class="step-num">2</span><h3>Genera el anuncio</h3><p>VendeAI redacta un título, una descripción, palabras clave y un mensaje para compradores, usando solo lo que has escrito.</p></li>
+        <li><span class="step-num">3</span><h3>Copia y publica</h3><p>Copia cada parte o todo junto, y pégalo directamente en Vinted o en la plataforma que uses.</p></li>
+      </ol>
+    </div>
+  </section>
+
+  <section id="precios" class="section-narrow">
+    <div class="container">
+      <h2>Precios</h2>
+      <div class="plans">
+        <div class="plan">
+          <h3>Gratis</h3>
+          <p class="plan-price">0€</p>
+          <ul>
+            <li>3 generaciones al día</li>
+            <li>Título del anuncio</li>
+            <li>Descripción</li>
+            <li>Palabras clave</li>
+          </ul>
+          <a href="#inicio" class="btn btn-outline">Empezar gratis</a>
+        </div>
+        <div class="plan plan-pro">
+          <span class="badge">Próximamente</span>
+          <h3>Pro</h3>
+          <p class="plan-price">—</p>
+          <ul>
+            <li>Generaciones ilimitadas</li>
+            <li>Varias versiones del anuncio</li>
+            <li>Respuestas para compradores</li>
+            <li>Funciones avanzadas</li>
+          </ul>
+          <button class="btn btn-primary btn-pro" data-pro>Hazte Pro</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="faq" class="section-narrow">
+    <div class="container">
+      <h2>Preguntas frecuentes</h2>
+      <div class="faq-list">
+        <details>
+          <summary>¿VendeAI se inventa características de mi producto?</summary>
+          <p>No. Solo redacta con la información que tú introduces. Si falta algún dato importante, te lo indica en vez de inventarlo.</p>
+        </details>
+        <details>
+          <summary>¿Cómo calcula el precio sugerido?</summary>
+          <p>Se basa únicamente en el precio que tú indicas. No consulta precios de mercado ni de otros anuncios: solo ordena y presenta tu propio precio.</p>
+        </details>
+        <details>
+          <summary>¿Cuántos anuncios puedo generar gratis?</summary>
+          <p>3 generaciones al día en el plan Gratis. El contador se reinicia cada día.</p>
+        </details>
+        <details>
+          <summary>¿Necesito crear una cuenta?</summary>
+          <p>No. La herramienta funciona en tu navegador y solo guarda tu contador diario en este dispositivo.</p>
+        </details>
+        <details>
+          <summary>¿Cuándo estará disponible el plan Pro?</summary>
+          <p>Estamos trabajando en ello. De momento puedes usar el plan Gratis sin limitaciones de funciones, solo de cantidad diaria.</p>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <section id="privacidad" class="section-narrow">
+    <div class="container">
+      <h2>Política de privacidad</h2>
+      <p>VendeAI genera los anuncios directamente en tu navegador. Los datos del formulario (nombre del producto, marca, estado, talla, color, información adicional y precio) no se envían a ningún servidor: se procesan localmente para redactar el anuncio.</p>
+      <p>Guardamos en tu dispositivo, mediante <em>localStorage</em>, únicamente la fecha y el número de anuncios generados hoy, para aplicar el límite del plan Gratis. Puedes borrar estos datos en cualquier momento desde la configuración de tu navegador.</p>
+      <p>Si en el futuro se activan funciones que requieran conectar con un servicio externo de inteligencia artificial, esta política se actualizará antes de activarlas.</p>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="container footer-row">
+    <span class="logo">VendeAI</span>
+    <span>Crea anuncios mejores en segundos.</span>
+  </div>
+</footer>
+
+<div class="modal hidden" id="pro-modal">
+  <div class="modal-box">
+    <p>El plan Pro llegará pronto. Todavía no se puede contratar ni se realiza ningún cobro.</p>
+    <button class="btn btn-primary" id="modal-close">Entendido</button>
+  </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
